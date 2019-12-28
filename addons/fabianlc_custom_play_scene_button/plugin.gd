@@ -24,7 +24,7 @@ func _enter_tree():
 	var buttons = []
 	var play_icon = interface.get_icon("PlayScene","EditorIcons")
 	var main_play_icon = interface.get_icon("MainPlay","EditorIcons")
-	print_all(interface,buttons)
+	fetch_potential_play_buttons(interface,buttons)
 	var i = 0
 
 	for butt in buttons:
@@ -35,9 +35,7 @@ func _enter_tree():
 		elif b.icon == play_icon:
 			old_play_button = b
 			b.hide()
-			print("hidden")
 	if i == 1:
-		print("Ladys and gentlemen, we got him")
 		custom_play_button = ToolButton.new()
 		custom_play_button.icon = play_icon
 		custom_play_button.modulate.b = 1.5
@@ -47,7 +45,6 @@ func _enter_tree():
 		var prt = main_play_button.get_parent()
 		prt.add_child(custom_play_button)
 		var play_signal = main_play_button.get_meta("play_signal")
-		print(play_signal["binds"])
 		custom_play_button.connect("pressed",play_signal["target"],"_menu_option",play_signal["binds"])
 		custom_play_button.connect("pressed",self,"play_scene_pressed")
 		if !main_play_button.is_connected("pressed",self,"play_game_pressed"):
@@ -59,7 +56,7 @@ func play_game_pressed():
 func play_scene_pressed():
 	set_start_scene(get_editor_interface().get_edited_scene_root().filename)
 
-func print_all(node,butt):
+func fetch_potential_play_buttons(node,butt):
 	for c in node.get_children():
 		if c is ToolButton:
 			var connection_list = c.get_signal_connection_list("pressed")
@@ -67,7 +64,7 @@ func print_all(node,butt):
 				if s["method"] == "_menu_option":
 					butt.append(c)
 					c.set_meta("play_signal",s)
-		print_all(c,butt)
+		fetch_potential_play_buttons(c,butt)
 
 func _exit_tree():
 	if is_instance_valid(custom_play_button):
