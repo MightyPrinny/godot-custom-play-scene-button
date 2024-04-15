@@ -42,6 +42,9 @@ func _enter_tree():
 		custom_play_button.focus_mode = Control.FOCUS_NONE
 		custom_play_button.toggle_mode = false
 
+		if is_instance_valid(old_play_button):
+			custom_play_button.shortcut = old_play_button.shortcut
+
 		var prt = main_play_button.get_parent()
 		prt.add_child(custom_play_button)
 		var play_signal = main_play_button.get_meta("play_signal")
